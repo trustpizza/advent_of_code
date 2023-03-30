@@ -8,8 +8,12 @@ def part_one(file_name: str) -> int:
             max = sum(elf)
     return max
 
-def part_two():
-    return
+def part_two(file_name: str) -> int:
+    elf_calories = process_calories(file_name)
+    sum_of_all = [sum(elf) for elf in elf_calories]
+
+    top_3_calories = sorted(sum_of_all, reverse=True)[0:3]
+    return sum(top_3_calories)
 
 def process_calories(file_name: str) -> list[list[int]]:
     with open(file_name, encoding="UTF-8") as f:
@@ -23,3 +27,5 @@ if __name__ == "__main__":
 
     print("---Part One---")
     print(part_one(file_name))
+    print("---Part Two---")
+    print(part_two(file_name))
