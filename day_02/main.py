@@ -80,14 +80,29 @@ def part_one(file):
 
     return total_score
 
-def part_two():
-    return
+def part_two(file):
+    total_score = 0
+
+    combos = read_file(file)
+    for move, outcome in combos:
+        opp_move = Move.to_move(move)
+        match outcome:
+            case "X": # Lose
+                my_move = opp_move.beats()
+            case "Y": # Tie
+                my_move = opp_move
+            case "Z": #win
+                my_move = opp_move.loses_to()
+
+        total_score += my_move.move_score()
+        total_score += calc_game_score(opp_move, my_move)
+    return total_score
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(os.path.realpath("__file__"))
-    input_file = "temp.txt" #temp is the small test file
+    input_file = "input.txt" #temp is the small test file
     file_name = os.path.join(file_dir, input_file)
     print("---Part One---")
     print(part_one(file_name))
-    #print("---Part Two---")
-    #print(part_two(file_name))
+    print("---Part Two---")
+    print(part_two(file_name))
