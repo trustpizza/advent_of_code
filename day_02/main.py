@@ -5,10 +5,14 @@ def part_one(file_name):
     combos = process_rps(file_name)
     for game in combos:
         game = list(game)
-        p1val = game[0]
-        p2val = game[1]
+        p1val = convert_value_to_rps(game[0])
+        p2val = convert_value_to_rps(game[1])
 
-    return
+        outcome = rocks_paper_scissors(p1val, p2val)
+        score += p2val
+        score += outcome
+
+    return score
 
 def part_two():
     return
@@ -17,8 +21,6 @@ def part_two():
 # 2 is Paper
 # 3 is Scissors
 
-# true is a win
-# false is a loss
 def rocks_paper_scissors(val1, val2):
     if (val1 == val2):
         return 3
