@@ -1,87 +1,87 @@
 import os
+from enum import Enum, auto
 
-def part_one(file_name):
-    score = 0
-    combos = process_rps(file_name)
-    for game in combos:
-        game = list(game)
-        p1val = convert_value_to_rps(game[0])
-        p2val = convert_value_to_rps(game[1])
+class Move(Enum):
+    ROCK = auto()
+    PAPER = auto()
+    SCISSORS = auto()
 
-        outcome = rocks_paper_scissors(p1val, p2val)
-        score += p2val
-        score += outcome
+    def beats(self):
+        match self:
+            case Move.ROCK:
+                return Move.SCISSORS
+            case Move.PAPER:
+                return Move.ROCK
+            case Move.SCISSORS:
+                return Move.PAPER
 
-    return score
+    def loses_to(self):
+        match self:
+            case Move.ROCK:
+                return Move.PAPER
+            case Move.PAPER:
+                return Move.SCISSORS
+            case Move.SCISSORS:
+                return Move.ROCK
 
-def part_two(file_name):
-    score = 0
-    combos = process_rps(file_name)
-    for game in combos:
-        game = list(game)
-        p1val = convert_value_to_rps(game[0])
-        p2val = find_next_value(p1val, game[1])
+    def move_score(self):
+        match self:
+            case Move.ROCK:
+                return 1
+            case Move.PAPER:
+                return 2
+            case Move.SCISSORS:
+                return 3
 
-        #print (p1val, p2val)
-        outcome = rocks_paper_scissors(p1val, p2val)
-        print(p1val)
-        score += p2val
-        score += outcome
-    return score
+    @classmethod
+    def to_move(cls, move: str):
+        match move:
+            case "A" | "X":
+                return Move.ROCK
+            case "B" | "Y":
+                return Move.PAPER
+            case "C" | "Z":
+                return Move.SCISSORS
+        raise ValueError("Invalid move")
 
-# 1 is Rock
-# 2 is Paper
-# 3 is Scissors
-
-def find_next_value(val, goal):
-    out = None
-    if goal == "X":
-        if val == 1: out = 2
-        if val == 2: out = 3
-        if val == 3: out = 1
-    elif goal == "Z":
-        if val == 1: out = 3
-        if val == 2: out = 1
-        if val == 3: out = 2
-    else: out = val
-
-    return out
-
-def rocks_paper_scissors(val1, val2):
-    if (val1 == val2):
+def calc_game_score(opp_move, my_move: Move):
+    if opp_move == my_move:
         return 3
-    elif (val1 == 1): 
-        if (val2 == 2):
-            return 6
-        else:
-            return 0
-    elif (val1 == 2): 
-        if (val2 == 1):
-            return 0
-        elif (val2 == 3):
-            return 6
-    elif (val1 == 3): 
-        if (val2 == 1):
-            return 6
-        elif (val2 == 2):
-            return 0
+    elif my_move == opp_move.loses_to(): #Win Case
+        return 6
+    elif my_move == opp_move.beats():
+        return 0
 
-def convert_value_to_rps(val):
-    if (val == "X" or val == "A"):
+def convert_letter_to_rps(char):
+    if (char == "A" or char == "X"):
         return 1
-    elif (val == "Y" or val == "B"):
+    elif (char == "B" or char == "Y"):
         return 2
-    elif (val == "Z" or val == "C"):
+    elif (char == "C" or char == "Z"):
         return 3
 
-def process_rps(file_name):
+def read_file(file_name):
     with open(file_name) as f:
         combos = f.read()
 
     combos = combos.split()
     combos = ["".join(x) for x in zip(combos[0::2], combos[1::2])]
-
+    
     return combos
+
+def part_one(file):
+    total_score = 0
+
+    combos = read_file(file)
+    for game in combos:
+        opp_move, my_move = Move.to_move(game[0]), Move.to_move(game[1])
+        total_score += my_move.move_score()
+        total_score += calc_game_score(opp_move, my_move)
+
+    return total_score
+
+def part_two():
+    return
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(os.path.realpath("__file__"))
@@ -89,5 +89,5 @@ if __name__ == "__main__":
     file_name = os.path.join(file_dir, input_file)
     print("---Part One---")
     print(part_one(file_name))
-    print("---Part Two---")
-    print(part_two(file_name))
+    #print("---Part Two---")
+    #print(part_two(file_name))
