@@ -59,8 +59,10 @@ def process_rps(file_name):
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(os.path.realpath("__file__"))
-    input_file = "temp.txt" #temp is the small test file
+    input_file = "input.txt" #temp is the small test file
+    
     file_name = os.path.join(file_dir, input_file)
+    print(file_name)
 
     print("---Part One---")
     print(part_one(file_name))
