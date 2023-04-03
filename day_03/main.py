@@ -5,7 +5,11 @@
 # 
 import os
 
+def search_rucksacks(rucksacks):
+    return
+
 def part_one(file_name):
+    rucksacks = process_rucksacks(file_name)
     # take rucksacks
     # Take each rucksack
     # Split it into a left and right half
@@ -18,7 +22,7 @@ def part_one(file_name):
                 # pointer2++
             # if left[pointer != right[pointer2] AND pointer2 is the last item in the list
                 # Restart at pointer++
-    return process_rucksacks(file_name)
+    return rucksacks[0]
 
 def part_two(file_name):
     return
@@ -26,7 +30,7 @@ def part_two(file_name):
 def process_rucksacks(file_name):
     with open(file_name) as f:
         rucksacks = f.read().split()
-    return rucksacks
+    return [list(map(list,rucksack)) for rucksack in rucksacks]
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(os.path.realpath("__file__"))
