@@ -4,6 +4,8 @@
 
 # 
 import os
+import itertools as it
+import more_itertools as mit
 
 def find_priority(char):
     val = 0
@@ -12,6 +14,20 @@ def find_priority(char):
     else: 
         val = ord(char) - 96
     return val
+
+def search_group(group):
+    elves = []
+    for elf in group:
+        flattened_elf = (list(it.chain(*elf)))
+        elves.append(flattened_elf)
+    
+    shared_char = None
+    
+    for idx, char in enumerate(elves[0]):
+        if char in elves[1] and char in elves[2]:
+            shared_char = char
+
+    return shared_char
 
 def split_and_search_rucksack(rucksack):
     left_half = rucksack[:int(len(rucksack)/2)]
@@ -38,7 +54,22 @@ def part_one(file_name):
     return sum(priorities)
 
 def part_two(file_name):
-    return
+    rucksacks = process_rucksacks(file_name)
+    three_elf_group = list(mit.chunked(rucksacks, 3))
+
+    shared = []
+    for group in three_elf_group:
+        shared_letter = search_group(group)
+        shared.append(shared_letter)
+    # for group in three_elf_group:
+    #     shared_letter = search_group(group)
+    #     print(shared_letter)
+    priorities = []
+    for char in shared:
+        priority = find_priority(char)
+        priorities.append(priority)
+    
+    return sum(priorities)   
 
 def process_rucksacks(file_name):
     with open(file_name) as f:
