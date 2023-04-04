@@ -5,54 +5,13 @@
 # 
 import os
 
-# def search_rucksack(left_half, right_half, lpointer=0):
-#     if lpointer > len(left_half) -1:
-#         return
-#     target = left_half[lpointer]
-#     # What are my break points for this recursion
-#     # 
-#     #target = None
-
-#     for idx, item in enumerate(right_half):
-#         #print("Target:", target)
-#         #print("Current Item:", item)
-#         #print("Left Half", left_half)
-#         #print("Right Half", right_half)
-#         #print("Eval", target == item)
-#         #print("=====================")
-        
-#         if target == item:
-#             return item
-#         else:
-#             continue
-#     print("Target:", target)
-#     print("Current Item:", item)
-#     print("Left Half", left_half)
-#     print("Right Half", right_half)
-#     print("Eval", target == item)
-#     print("=====================")       
-#     if (item == target):
-#         print(item)
-#     else:
-#         lpointer += 1
-#         search_rucksack(left_half, right_half, lpointer)
-    
-#     # else:
-#     #     lpointer += 1
-#     #     print(lpointer)
-#         #search_rucksack(left_half, right_half, lpointer)
-#         #else: 
-#             #lpointer +=1
-#             #return search_rucksack(left_half, right_half, lpointer)
-#     # lpointer +=1
-#     # print(lpointer)
-#     # search_rucksack(left_half, right_half, lpointer)
-
-
-#     # while rpointer <= len(right_half):
-#     #     print(target == right_half[rpointer])
-#     #     rpointer += 1
-
+def find_priority(char):
+    val = 0
+    if ord(char) <= 90:
+        val = ord(char)-65 + 27
+    else: 
+        val = ord(char) - 96
+    return val
 
 def split_and_search_rucksack(rucksack):
     left_half = rucksack[:int(len(rucksack)/2)]
@@ -64,24 +23,19 @@ def split_and_search_rucksack(rucksack):
 
 
     return char
-    
+
 def part_one(file_name):
     rucksacks = process_rucksacks(file_name)
-    shared_letter = split_and_search_rucksack(rucksacks[4])
+    priorities = []
 
-    # take rucksacks
-    # Take each rucksack
-    # Split it into a left and right half
-        # Left Container: pointer on left[pointer]
-            # pointer2 value is equal to 0
-            #Check right[pointer2] for item
-            # If left[pointer] == right[pointer2]
-                # return left[pointer]
-            # If left[pointer] != right[pointer2]
-                # pointer2++
-            # if left[pointer != right[pointer2] AND pointer2 is the last item in the list
-                # Restart at pointer++
-    return shared_letter
+    for rucksack in rucksacks:
+        shared_letter = split_and_search_rucksack(rucksack)[0]
+        priority = find_priority(shared_letter)
+        priorities.append(priority)
+
+    
+
+    return priorities
 
 def part_two(file_name):
     return
