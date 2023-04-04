@@ -5,29 +5,70 @@
 # 
 import os
 
-def search_rucksack(left_half, right_half, lpointer=0):
-    target = left_half[lpointer]
-    # What are my break points for this recursion
-    # 
-    for idx, item in enumerate(right_half):
-        if target == item:
-            return item
-    lpointer +=1
+# def search_rucksack(left_half, right_half, lpointer=0):
+#     if lpointer > len(left_half) -1:
+#         return
+#     target = left_half[lpointer]
+#     # What are my break points for this recursion
+#     # 
+#     #target = None
 
-    search_rucksack(left_half, right_half, lpointer)
+#     for idx, item in enumerate(right_half):
+#         #print("Target:", target)
+#         #print("Current Item:", item)
+#         #print("Left Half", left_half)
+#         #print("Right Half", right_half)
+#         #print("Eval", target == item)
+#         #print("=====================")
+        
+#         if target == item:
+#             return item
+#         else:
+#             continue
+#     print("Target:", target)
+#     print("Current Item:", item)
+#     print("Left Half", left_half)
+#     print("Right Half", right_half)
+#     print("Eval", target == item)
+#     print("=====================")       
+#     if (item == target):
+#         print(item)
+#     else:
+#         lpointer += 1
+#         search_rucksack(left_half, right_half, lpointer)
     
-    return
+#     # else:
+#     #     lpointer += 1
+#     #     print(lpointer)
+#         #search_rucksack(left_half, right_half, lpointer)
+#         #else: 
+#             #lpointer +=1
+#             #return search_rucksack(left_half, right_half, lpointer)
+#     # lpointer +=1
+#     # print(lpointer)
+#     # search_rucksack(left_half, right_half, lpointer)
+
+
+#     # while rpointer <= len(right_half):
+#     #     print(target == right_half[rpointer])
+#     #     rpointer += 1
+
 
 def split_and_search_rucksack(rucksack):
     left_half = rucksack[:int(len(rucksack)/2)]
     right_half = rucksack[int(len(rucksack)/2):]
 
-    search_rucksack(left_half, right_half)
+    for val, char in enumerate(rucksack):
+        if char in right_half and char in left_half:
+            return char
 
-    return
+
+    return char
     
 def part_one(file_name):
     rucksacks = process_rucksacks(file_name)
+    shared_letter = split_and_search_rucksack(rucksacks[4])
+
     # take rucksacks
     # Take each rucksack
     # Split it into a left and right half
@@ -40,7 +81,7 @@ def part_one(file_name):
                 # pointer2++
             # if left[pointer != right[pointer2] AND pointer2 is the last item in the list
                 # Restart at pointer++
-    return split_and_search_rucksack(rucksacks[0])
+    return shared_letter
 
 def part_two(file_name):
     return
