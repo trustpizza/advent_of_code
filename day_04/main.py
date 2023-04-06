@@ -1,5 +1,8 @@
 import re
 
+def get_diff(pair):
+    return pair[1] - pair[0]
+
 def part_one(file_path):
     # Set a counter to 0
     # Take the file input and split it one each line
@@ -13,20 +16,36 @@ def part_one(file_path):
                 # Else, next elf pair
     # Return counter
     counter = 0
-    print(open_file(file_path))
-    return
+    assignments = parse_data(file_path)
+    for pair in assignments:
+        larger_pair = pair[0] if get_diff(pair[0]) > get_diff(pair[1]) else pair[1] # if diff pair[0][1] - pair[0][0] > pair[1][1] - pair[]
+        smaller_pair = pair[0] if get_diff(pair[0]) <= get_diff(pair[1]) else pair[1]
+
+        range_of_smaller = list(range(smaller_pair[0], smaller_pair[1] + 1))
+        
+        check = all(larger_pair[0] <= item <= larger_pair[1] for item in range_of_smaller)
+
+        if check: counter += 1
+    return counter
 
 def part_two(file_path):
     return
 
-def open_file(file_path):
+def parse_data(file_path):
     assignments = []
     with open(file_path) as f:
         lines = f.read().strip().split()
         for line in lines:
-            a,b,c,d = map(int, re.findall(r"\d", line))
+            a,b,c,d = map(int, re.findall(r"\d+", line))
             assignments.append([[a,b],[c,d]])
 
+    # assignments = []
+    # with open(file_path, encoding="utf-8") as f:
+    #     lines = f.read().strip().split("\n")
+    #     for line in lines:
+    #         a, b, c, d = map(int, re.findall(r"\d+", line))
+    #         assignments.append([(a, b), (c, d)])
+    # return assignments
         # lines = f.read().strip().split()
         # for temp_line in lines:
         #     temp_line = temp_line.split(",")
@@ -41,7 +60,7 @@ def open_file(file_path):
     return assignments
 
 if __name__ == "__main__":
-    input_file = "temp.txt" #temp is the small test file
+    input_file = "input.txt" #temp is the small test file
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
