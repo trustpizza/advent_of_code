@@ -12,6 +12,8 @@ def part_one(file_path):
                 # If true, coutner ++ 
                 # Else, next elf pair
     # Return counter
+    counter = 0
+    print(open_file(file_path))
     return
 
 def part_two(file_path):
@@ -19,15 +21,13 @@ def part_two(file_path):
 
 def open_file(file_path):
     with open(file_path) as f:
-        x = f.read()
-    print(x)
+        elves = f.read().split()
+    
+    return [list(map(list, elf)) for elf in elves] 
 
 if __name__ == "__main__":
-    file_dir = "./"
-    #file_dir = os.path.dirname(os.path.realpath("__file__"))
     input_file = "temp.txt" #temp is the small test file
-    file_name = os.path.join(file_dir, input_file)
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
-    print(part_two(file_name))
+    print(part_two(input_file)) 
