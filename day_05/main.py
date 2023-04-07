@@ -11,8 +11,7 @@ def part_one(input_file):
         containers_moved = container_group[start][0:how_many]
         for container in containers_moved:
             container_group[destination].insert(0,container)
-            # container_group[destination].append(container)
-            #print("Moving:" + container_group[start][0:how_many] + "From:" + container_group[start] + "To:" + container_group[destination] + "Currently:" + container_group + "")
+            
         del container_group[start][0:how_many]
 
     first_of_each_container_group = []
@@ -20,10 +19,30 @@ def part_one(input_file):
     for stack in container_group:
         first_of_each_container_group.append(stack[0])
         # print(group[0])
-    return first_of_each_container_group
+    return "".join(first_of_each_container_group)
 
 def part_two(input_file):
-    return
+    input_data = parse_data(input_file)
+    container_group = input_data[0]
+    moves = input_data[1]
+    print(container_group)
+    for move in moves:
+        how_many = move[0]
+        start = move[1] - 1
+        destination = move[2] - 1
+
+        containers_moved = container_group[start][0:how_many]
+        container_group[destination] = containers_moved + container_group[destination]
+
+        # for container in containers_moved:
+            # container_group[destination].insert(0,container)
+        del container_group[start][0:how_many]
+
+    first_of_each_container_group = []
+
+    for stack in container_group:
+        first_of_each_container_group.append(stack[0])
+    return "".join(first_of_each_container_group)
 
 def get_data_shape(container_data):
     data_shape = []
@@ -53,16 +72,6 @@ def get_moves(move_lines):
     return moves
 
 def parse_data(input_file):
-    # Take the input file
-    # Read it
-        # Take the read file
-        # Split the data into two section
-            # Wait for the first line that starts with "move", everything before that is the Data shape
-            # Everything after that are the data moves
-
-    # How to read the data
-        # The last row, the one with columns has an identical number of spaces to an empty list.  
-    # Data shape is the 
     with open(input_file) as f:
         file_lines = f.read().split("\n\n")
         data_lines = []
@@ -83,9 +92,8 @@ def test(input_file):
         print(file_lines)
 
 if __name__ == "__main__":
-    input_file = "temp.txt" #temp is the small test file
+    input_file = "input.txt" #temp is the small test file
     print("---Part One---")
     print(part_one(input_file))
-    #test(input_file)
     print("---Part Two---")
     print(part_two(input_file)) 
