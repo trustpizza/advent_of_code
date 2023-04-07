@@ -17,15 +17,24 @@ def parse_data(input_file):
 
     # How to read the data
         # The last row, the one with columns has an identical number of spaces to an empty list.  
-    data_shape = []
+    data_lines = []
+    data_shape = {}
+    # Data shape is the 
     moves = []
     with open(input_file) as f:
         file_lines = f.read().split("\n\n")
         for line in file_lines[0].splitlines():
-            data_shape.append([*line])
-
-        
-    return [data_shape, moves]
+            data_lines.append([*line])
+    col_nums = data_lines[-1]
+    for i, num in enumerate(col_nums):
+        if num != " ":    
+            col = []
+            for line in data_lines[:-1]:
+                if line[i] != " ": 
+                    col.append(line[i]) 
+            data_shape[int(num)] = col
+    print(data_shape)
+    return #[data_shape, moves]
 
 def test(input_file):
     with open(input_file) as f:
