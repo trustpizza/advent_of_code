@@ -1,13 +1,7 @@
 class File:
     def __init__(self, file_string):
-        self.name = find_file_name(file_string)
-        self.size = find_file_size(file_string)
-
-def find_file_name(string):
-    return string.split(" ")[1]
-
-def find_file_size(string):
-    return string.split(" ")[0]
+        self.name = file_string.split(" ")[1]
+        self.size = file_string.split(" ")[0]
 
 def part_one(input_file):
     # Split lines
