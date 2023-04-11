@@ -1,0 +1,27 @@
+This is my psuedocode for part one
+
+Split the input into every "cd" 
+
+Create a root_dir
+
+    Find the child dirs
+    Find the files it holds
+
+Starting with the second command_block
+    Take the first item
+    If the item following "cd" is ".."
+        Go to the parent_dir
+    else:
+        Create a new directory with name 
+
+Directory:
+    Has a parent node and child nodes
+    Has files
+    size = 0
+    for each file
+        set size += file size
+    
+
+Search down the tree of directory nodes
+    
+        
