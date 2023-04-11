@@ -7,7 +7,7 @@ def part_two(input_file):
     string_as_list = [*string]
     for idx, char in enumerate(string_as_list):
         if idx > 13:
-            if len(string_as_list[idx-14:idx]) == len(set(string_as_list[idx-14:idx])): return idx
+            if len(string_as_list[idx-14:idx]) == len(set(string_as_list[idx-4:idx])): return idx
     return
 
 def parse_input(input_file):
