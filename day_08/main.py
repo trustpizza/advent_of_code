@@ -1,17 +1,8 @@
-def get_rows_from_cols(cols):
-    rows = []
-    for idx in range(len(cols[0])):
-        row = []
-        for col in cols:
-            row.append(col[idx])
-        rows.append(row)
-    return rows
 
 def part_one(input_file):
     data = parse_input(input_file)
-    cols = data
-    rows = get_rows_from_cols(cols)
-    return 
+
+    return data
 
 
 def part_two(input_file):
@@ -19,8 +10,12 @@ def part_two(input_file):
 
 def parse_input(input_file):
     with open(input_file) as f:
+        rows = []
         data = f.read().splitlines()
-    return data
+        for row in data:
+            row = list(map(int, [*row]))
+            rows.append(row)
+    return rows
 
 if __name__ == "__main__":
     input_file = "temp.txt"
