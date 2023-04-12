@@ -35,7 +35,7 @@ def get_col_from_list(list) -> list:
         cols.append(col)
     return cols
 
-def get_perimeter_trees(forest) -> list:
+# def get_perimeter_trees(forest) -> list:
     # Take the first row, the last row, the first col, and the last col
     perimeter_trees_locations = []
     # Get the location of each tree
@@ -46,7 +46,7 @@ def get_perimeter_trees(forest) -> list:
                 perimeter_trees_locations.append(loc)
     return perimeter_trees_locations
 
-def get_internal_trees(forest) -> list:
+def get_visible_trees(forest) -> list:
     internal_tree_locations = []
     cols = get_col_from_list(forest)
     for row_idx, row in enumerate(forest):
@@ -61,31 +61,30 @@ def get_internal_trees(forest) -> list:
         # Split Cols
         top_col_half = col[0:highest_tree_idx_col+1]
         bottom_col_half = col[highest_tree_idx_col:None]
-        
-        print(top_col_half, bottom_col_half)
 
 
         visible_left = get_visible_trees_from_list(left_row_half)
         visible_right = get_visible_trees_from_reversed_list(right_row_half)
+        visible_top = get_visible_trees_from_list(top_col_half)
+        visible_bottom = get_visible_trees_from_reversed_list(bottom_col_half)
+
         # print(left_row_half)
         for tree in visible_left:
             internal_tree_locations.append([row_idx,tree])
         for tree in visible_right:
             internal_tree_locations.append([row_idx, tree])
+        for tree in visible_top:
+            internal_tree_locations.append([tree, row_idx])
+        for tree in visible_bottom:
+            internal_tree_locations.append([tree, row_idx])
 
     # internal_tree_locations = unique_values(internal_tree_locations)
     return internal_tree_locations
 
 def part_one(input_file):
     data = parse_input(input_file)
-    visible_trees_count = 0
-    # Step 1, get all perimeter values
-    perimeter_trees = get_perimeter_trees(data)
-    internal_trees = get_internal_trees(data)
-    visible_trees =  unique_values(perimeter_trees+internal_trees)
-    print(len(visible_trees))
-    # visible_trees += len(perimeter_trees)
-    return visible_trees_count
+    visible_trees =  unique_values(get_visible_trees(data))
+    return len(visible_trees)
 
 
 def part_two(input_file):
@@ -101,7 +100,7 @@ def parse_input(input_file):
     return rows
 
 if __name__ == "__main__":
-    input_file = "temp.txt"
+    input_file = "input.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
