@@ -1,120 +1,117 @@
-import re
+from typing import Type
 
-def find_dirs(ls):
-    dirs = []
-    for obj in ls:
-        if is_dir(obj): dirs.append(obj)
-    return dirs
-
-def find_files(ls):
-    files = []
-    for obj in ls: 
-        if is_file(obj): files.append(obj)
-    return files
-
-def is_file(string):
-    pattern1 = r"\d*\s\w+$"
-    pattern2 = r".[A-Za-z]{3}$"
-    # return bool(re.match(pattern2, string[-4:]))
-    first_case = bool(re.match(pattern1, string))
-    return bool(re.match(pattern1, string) or re.match(pattern2, string[-4:]))
-
-def is_dir(string):
-    return string.startswith("dir")
-    # return bool(string.startswith("dir"))
-
-def parse_group(group):
-    pass
 
 class Directory:
-    def __init__(self,parent = None) -> None:
-        self.files = []
-        self.child_dirs = []
+    def __init__(self, name: str, parent: Type["Directory"] | None = None):
+        self.name = name
         self.parent = parent
-        pass
+        self.children: list[Type["Directory"] | Type["File"]] = []
 
-    def add_dir(dir) -> None:
-        pass
+    def add_child(self, child: Type["Directory"] | Type["File"]):
+        self.children.append(child)
 
-    def add_file(self,file) -> None:
-        self.files.append(file)
-    
-    def print_input(self):
-        print(self.files)
+    def get_path(self) -> str:
+        if self.parent is None:
+            return self.name
+        parent = self.parent.get_path()
+        if parent != "/":
+            return f"{parent}/{self.name}"
+        return f"/{self.name}"
+
+    def get_child(self, name: str) -> Type["Directory"] | Type["File"]:
+        for child in self.children:
+            if child.name == name:
+                return child
+        raise ValueError(f"Child {name} not found")
+
+    def total_size(self, size_cache: dict[str, int] | None = None) -> int:
+        curr_path = self.get_path()
+        total_size = sum(
+            child.total_size(size_cache) if isinstance(child, Directory) else child.size
+            for child in self.children
+        )
+        if size_cache is not None:
+            size_cache[curr_path] = total_size
+        return total_size
+
+    def __repr__(self):
+        return f"{self.name} (dir)"
+
 
 class File:
-    def __init__(self, file_string):
-        self.name = file_string.split(" ")[1]
-        self.size = file_string.split(" ")[0]
+    def __init__(self, name: str, parent: Type["Directory"], size: int):
+        self.name = name
+        self.parent = parent
+        self.size = size
+
+    def get_path(self) -> str:
+        return f"{self.parent.get_path()}/{self.name}"
+
+    def __repr__(self):
+        return f"{self.name} (file, size={self.size})"
 
 
-def part_one(input_file):
-    command_blocks = group_commands(input_file)
-    for block in command_blocks:
-        print(block)
-
-    test = command_blocks[0]
-    root = Directory()
-    current_dir = None
-    #Create a root directory
-    # Find all files within it, add those files
-    # Find all subdirectories, add those directories
-    
-    # child_dirs = find_dirs(test)
-    # files = find_files(test)
-
-    # for dir in child_dirs:
-    #     dir_command = "$ cd " + dir.split(" ")[1]
-    #     for command_block in command_blocks:
-    #         if command_block[0] == dir_command:
-    #             print(command_block)
-
-    # print(child_dirs, files)
-
-    # for command_block in command_blocks:
-    #     if command_block[0].endswith("/"): 
-    #         current_dir = root
-    #     else:
-    #         current_dir = Directory(command_block[0].split()[2])
-    #     for command in command_block:
-    #         # print(is_file(command),command)
-    #         if is_file(command):
-    #             current_dir.add_file(command)
-    #         elif is_dir(command):
-    #             print(command)
-    #             # dir.add_dir(command)
+def calculated_directory_sizes(
+    root: Directory, size_cache: dict[str, int] | None = None
+) -> dict[str, int]:
+    if size_cache is None:
+        size_cache = {}
+    if root.get_path() in size_cache:
+        return size_cache
+    root.total_size(size_cache)
+    return size_cache
 
 
-def part_two(input_file):
-    return
+def part_one(filename: str) -> int:
+    root = parse_input(filename)
+    dir_sizes = calculated_directory_sizes(root)
+    return sum([size for size in dir_sizes.values() if size < 100000])
 
-def group_commands(input_file):
-    with open(input_file) as f:
-        terminal_data = f.read().strip().split("\n")
 
-    groups = []
-    group = []
-    for command in terminal_data:
-        if command.startswith("$ cd"):
-            # Start a new group
-            if group:
-                groups.append(group)
-            group = [command]
-        else:
-            # Add command to current group
-            group.append(command)
+def part_two(filename: str) -> int:
+    root = parse_input(filename)
+    dir_sizes = calculated_directory_sizes(root)
+    total_size = 70000000
+    used_space = dir_sizes["/"]
+    space_needed = 30000000
+    return min(
+        [
+            size
+            for size in dir_sizes.values()
+            if total_size - used_space + size >= space_needed
+        ]
+    )
 
-    # Add the final group
-    if group:
-        groups.append(group)
 
-    return groups
+def parse_input(filename: str) -> Directory:
+    with open(filename, "r", encoding="utf8") as f:
+        terminal_output = f.read().strip().split("\n")
+    root: Type["Directory"] = Directory("/")
+    current_directory = root
+    for line in terminal_output:
+        match line.split():
+            case ["$", "ls"]:
+                continue
+            case ["$", "cd", ".."]:
+                current_directory = current_directory.parent
+            case ["$", "cd", "/"]:
+                current_directory = root
+            case ["$", "cd", directory] if directory != "/":
+                current_directory = current_directory.get_child(directory)
+            case ["dir", directory]:
+                current_directory.add_child(Directory(directory, current_directory))
+            case [size, filename]:
+                current_directory.add_child(
+                    File(filename, current_directory, int(size))
+                )
+    print(root)
+    return root
 
-    
 
 if __name__ == "__main__":
-    input_file = "temp.txt"
+    input_path = "input.txt"
     print("---Part One---")
-    print(part_one(input_file))
+    print(part_one(input_path))
+
     print("---Part Two---")
-    print(part_two(input_file)) 
+    print(part_two(input_path))
