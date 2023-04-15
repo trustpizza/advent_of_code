@@ -62,7 +62,6 @@ def get_visible_trees(forest) -> list:
         top_col_half = col[0:highest_tree_idx_col+1]
         bottom_col_half = col[highest_tree_idx_col:None]
 
-
         visible_left = get_visible_trees_from_list(left_row_half)
         visible_right = get_visible_trees_from_reversed_list(right_row_half)
         visible_top = get_visible_trees_from_list(top_col_half)
@@ -77,13 +76,13 @@ def get_visible_trees(forest) -> list:
             internal_tree_locations.append([tree, row_idx])
         for tree in visible_bottom:
             internal_tree_locations.append([tree, row_idx])
-
     # internal_tree_locations = unique_values(internal_tree_locations)
     return internal_tree_locations
 
 def part_one(input_file):
     data = parse_input(input_file)
     visible_trees =  unique_values(get_visible_trees(data))
+    print(visible_trees)
     return len(visible_trees)
 
 

@@ -62,6 +62,11 @@ def part_one(file):
     return len(out)
 
 def part_two(file):
+    """
+    Plan:
+        I could create 10 seperate pieces and set each as a 'head' to the one behind it, starting with the true head and ending with the tail
+        Let's try???
+    """
     return
 
 def clean_input_line(line) -> None:
