@@ -18,6 +18,7 @@ class Piece:
     def get_loc(self) -> list:
         return self.location
 
+
 def check_rope_is_touching(head_loc, tail_loc):
     if tail_loc[0] >= head_loc[0]-1 and tail_loc[0] <= head_loc[0] +1 and tail_loc[1] >= head_loc[1] -1 and tail_loc[1] <= head_loc[1] +1:
         return True
@@ -44,19 +45,18 @@ def part_one(file):
             head_loc = list(head.get_loc())
             head.move(line[0])
 
-            if was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()):
+            if was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()): # Valid move
                 tail.set_loc([head_loc[0], head_loc[1]])
     
             was_diag = False
 
-            if is_diagnol(head.get_loc(),tail.get_loc()):
+            if is_diagnol(head.get_loc(),tail.get_loc()): # Prepare for the next move
                 was_diag = True  
 
-            if not check_rope_is_touching(head.get_loc(),tail.get_loc()):
+            if not check_rope_is_touching(head.get_loc(),tail.get_loc()): # Move the tail for normal diaganols
                 tail.move(line[0])
-            current_location = tail.get_loc()
 
-            locations.append([current_location[0], current_location[1]])
+            locations.append(list(tail.get_loc()))
 
     out = set(tuple(loc) for loc in locations)
     return len(out)
