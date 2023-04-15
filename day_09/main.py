@@ -41,17 +41,13 @@ def part_one(file):
 
     for line in data:
         for _ in range(line[1]):
-            if was_diag:
-                head_loc = list(head.get_loc())
+            head_loc = list(head.get_loc())
+            head.move(line[0])
 
-                head.move(line[0])
-                
-                if not check_rope_is_touching(head.get_loc(), tail.get_loc()):
-                    tail.set_loc([head_loc[0], head_loc[1]])
-
-                was_diag = False
-            else:
-                head.move(line[0])
+            if was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()):
+                tail.set_loc([head_loc[0], head_loc[1]])
+    
+            was_diag = False
 
             if is_diagnol(head.get_loc(),tail.get_loc()):
                 was_diag = True  
@@ -60,8 +56,6 @@ def part_one(file):
                 tail.move(line[0])
             current_location = tail.get_loc()
 
-            # print(head.get_loc(), tail.get_loc())            
-          
             locations.append([current_location[0], current_location[1]])
 
     out = set(tuple(loc) for loc in locations)
