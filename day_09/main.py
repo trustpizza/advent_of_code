@@ -4,25 +4,29 @@ class Piece:
 
     def move(self,direction) -> None:
         if direction == "U":
-            self.location[0] += 1
-        elif direction == "D":
-            self.location[0] -= 1
-        elif direction == "R":
             self.location[1] += 1
-        elif direction == "L":
+        elif direction == "D":
             self.location[1] -= 1
+        elif direction == "R":
+            self.location[0] += 1
+        elif direction == "L":
+            self.location[0] -= 1
+
+    def set_loc(self, location: list) -> None:
+        self.location = location
 
     def get_loc(self) -> list:
         return self.location
 
-def check_rope_is_touching(head, tail):
-    head_loc = head.get_loc()
-    tail_loc = tail.get_loc()
-
+def check_rope_is_touching(head_loc, tail_loc):
     if tail_loc[0] >= head_loc[0]-1 and tail_loc[0] <= head_loc[0] +1 and tail_loc[1] >= head_loc[1] -1 and tail_loc[1] <= head_loc[1] +1:
         return True
-    else:
+    else:   
         return False
+
+def is_diagnol(head_loc,tail_loc):
+    if (tail_loc[0] == head_loc[0]+1 or tail_loc[0] == head_loc[0]-1) and (tail_loc[1] == head_loc[1]-1 or tail_loc[1] == head_loc[1]+1):
+        return True
 
 def part_one(file):
     data = parse_inputs(file)
@@ -33,20 +37,33 @@ def part_one(file):
     tail = Piece([0,0])
 
     locations = []
+    was_diag = False 
 
     for line in data:
         for _ in range(line[1]):
-            head.move(line[0])
-            is_touching = check_rope_is_touching(head, tail)
-            
-            if not is_touching:
+            if was_diag:
+                head_loc = list(head.get_loc())
+
+                head.move(line[0])
+                
+                if not check_rope_is_touching(head.get_loc(), tail.get_loc()):
+                    tail.set_loc([head_loc[0], head_loc[1]])
+                    
+                was_diag = False
+            else:
+                head.move(line[0])
+
+            if is_diagnol(head.get_loc(),tail.get_loc()):
+                was_diag = True  
+
+            if not check_rope_is_touching(head.get_loc(),tail.get_loc()):
                 tail.move(line[0])
             current_location = tail.get_loc()
 
-            print(head.get_loc(), tail.get_loc())            
-            # Find all moves  
+            # print(head.get_loc(), tail.get_loc())            
+          
             locations.append([current_location[0], current_location[1]])
-    # print(locations)
+
     out = set(tuple(loc) for loc in locations)
     return len(out)
 
