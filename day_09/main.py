@@ -48,7 +48,7 @@ def part_one(file):
                 
                 if not check_rope_is_touching(head.get_loc(), tail.get_loc()):
                     tail.set_loc([head_loc[0], head_loc[1]])
-                    
+
                 was_diag = False
             else:
                 head.move(line[0])
@@ -82,7 +82,7 @@ def parse_inputs(file):
     return lines
 
 if __name__ == "__main__":
-    input_file = "temp.txt"
+    input_file = "input.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
