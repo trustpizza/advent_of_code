@@ -1,34 +1,54 @@
-def determine_max(lines):
-    max_location = 0
-    current_location = 0
+class Piece:
+    def __init__(self, location: list) -> None:
+        self.location = location
 
-    for line in lines:
-        if line[0] == "U" or line[0] == "R":
-            current_location += line[1]
-        else:
-            current_location -= line[1]
-        if current_location > max_location: max_location = current_location
-    return max_location
+    def move(self,direction) -> None:
+        if direction == "U":
+            self.location[0] += 1
+        elif direction == "D":
+            self.location[0] -= 1
+        elif direction == "R":
+            self.location[1] += 1
+        elif direction == "L":
+            self.location[1] -= 1
 
-# def find_list_size(lines):
-#     up_and_down_inputs = list(filter(lambda item: item is not None, map(lambda line: line if (line[0] == "U" or line[0] == "D") else None, lines)))
-#     left_and_right_inputs = list(filter(lambda item: item is not None, map(lambda line: line if line[0] == "R" or line[0] == "L" else None, lines)))
-    
-#     # print(up_and_down_inputs)
-#     # print(max_height)
-#     # print(left_and_right_inputs)
+    def get_loc(self) -> list:
+        return self.location
 
-#     return [[" " for i in range(max_width)] for i in range(max_height)]# * max_height
+def check_rope_is_touching(head, tail):
+    head_loc = head.get_loc()
+    tail_loc = tail.get_loc()
+
+    if tail_loc[0] >= head_loc[0]-1 and tail_loc[0] <= head_loc[0] +1 and tail_loc[1] >= head_loc[1] -1 and tail_loc[1] <= head_loc[1] +1:
+        return True
+    else:
+        return False
 
 def part_one(file):
     data = parse_inputs(file)
-    # bridge = RopeBridge(data)
-    
-    # for line in data:
-        # bridge.process_movement(line)
-    # bridge.show_bridge()
+    # up_and_down_inputs = list(filter(lambda item: item is not None, map(lambda line: line if (line[0] == "U" or line[0] == "D") else None, lines)))
+    # left_and_right_inputs = list(filter(lambda item: item is not None, map(lambda line: line if line[0] == "R" or line[0] == "L" else None, lines)))
 
-    return 
+    head = Piece([0,0])
+    tail = Piece([0,0])
+
+    locations = []
+
+    for line in data:
+        for _ in range(line[1]):
+            head.move(line[0])
+            is_touching = check_rope_is_touching(head, tail)
+            
+            if not is_touching:
+                tail.move(line[0])
+            current_location = tail.get_loc()
+
+            print(head.get_loc(), tail.get_loc())            
+            # Find all moves  
+            locations.append([current_location[0], current_location[1]])
+    # print(locations)
+    out = set(tuple(loc) for loc in locations)
+    return len(out)
 
 def part_two(file):
     return
