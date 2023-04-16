@@ -50,7 +50,7 @@ def part_one(file):
             head.move(line[0])
 
             if tail.was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()): # Valid move
-                tail.set_loc([head_loc[0], head_loc[1]])
+                tail.set_loc(head_loc)
     
             tail.set_diag_false()
 
@@ -69,18 +69,44 @@ def part_two(file):
     data = parse_inputs(file)
 
     knots = []
-    for _ in range(10): # Create and populate Knots list
+    for _ in range(3): # Create and populate Knots list
         knot = Knot([0,0])
         knots.append(knot)
 
     locations = []
-    was_diag = False 
 
     for line in data:
         for _ in range(line[1]):
             for idx, knot in enumerate(knots):
-                if idx < 9:
+                if not idx == len(knots) -1: # If not the last one
+                    # print("Head")
+                    knot_loc = list(knot.get_loc())
+                    knot.move(line[0])
                     relative_tail = knots[idx+1]
+
+                    if relative_tail.was_diag and not check_rope_is_touching(knot.get_loc(), relative_tail.get_loc()):
+                        relative_tail.set_loc(knot_loc)
+                    
+                    relative_tail.set_diag_false()
+
+                    if is_diagnol(knot.get_loc(), relative_tail.get_loc()):
+                        relative_tail.set_diag_true()
+                    
+                    if not check_rope_is_touching(knot.get_loc(), relative_tail.get_loc()):
+                        relative_tail.move(line[0])
+
+                    if relative_tail == knots[-1]:
+                        print(knots[0].get_loc(),knot.get_loc(), relative_tail.get_loc())
+                elif idx == len(knots) -1:
+                    # print("Tail")
+                    # print(knot.get_loc())
+                    
+                    locations.append(list(knot.get_loc()))
+
+
+                    
+                # if idx < 9:
+                #     relative_tail = knots[idx+1]
                 pass
 
     out = set(tuple(loc) for loc in locations)
@@ -112,7 +138,7 @@ def parse_inputs(file):
     return lines
 
 if __name__ == "__main__":
-    input_file = "input.txt"
+    input_file = "temp.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
