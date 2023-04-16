@@ -3,6 +3,7 @@ class Knot:
         self.location = location
         self.was_diag = False
         self.child = child
+        self.parent = parent
 
     def move(self,direction) -> None:
         if direction == "U":
@@ -28,6 +29,9 @@ class Knot:
 
     def set_child(self, child):
         self.child = child
+
+    def set_parent(self, parent):
+        self.parent = parent
 
 def check_rope_is_touching(head_loc, tail_loc):
     if tail_loc[0] >= head_loc[0]-1 and tail_loc[0] <= head_loc[0] +1 and tail_loc[1] >= head_loc[1] -1 and tail_loc[1] <= head_loc[1] +1:
@@ -84,13 +88,26 @@ def part_two(file):
         if i < len(knots)-1:
             knots[i].set_child(knots[i+1])
 
+    for i in range(len(knots)):
+        if i != 0:
+            knots[i].set_parent(knots[i-1])
+
     locations = []
 
     for line in data:
         for _ in range(line[1]):
             for i in range(len(knots)):
                 head = knots[i]
+                parent = head.parent
                 tail = head.child
+
+                """
+                    Currently what happens is if there is a tail, the head moves.
+                    If the tail meets all of the conditions(it wasn't diaganol, it's not touching)
+                        The tail is updated to the head location
+                    if the tail is now diaganol,
+                    
+                """
                 if tail: 
                     head_loc = list(head.get_loc())
                     head.move(line[0])
