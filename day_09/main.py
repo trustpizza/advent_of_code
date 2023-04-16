@@ -1,6 +1,7 @@
 class Knot:
     def __init__(self, location: list) -> None:
         self.location = location
+        self.was_diag = False
 
     def move(self,direction) -> None:
         if direction == "U":
@@ -18,6 +19,11 @@ class Knot:
     def get_loc(self) -> list:
         return self.location
 
+    def set_diag_false(self):
+        self.was_diag = False
+
+    def set_diag_true(self):
+        self.was_diag = True
 
 def check_rope_is_touching(head_loc, tail_loc):
     if tail_loc[0] >= head_loc[0]-1 and tail_loc[0] <= head_loc[0] +1 and tail_loc[1] >= head_loc[1] -1 and tail_loc[1] <= head_loc[1] +1:
@@ -36,20 +42,20 @@ def part_one(file):
     tail = Knot([0,0])
 
     locations = []
-    was_diag = False 
+    # was_diag = False 
 
     for line in data:
         for _ in range(line[1]):
             head_loc = list(head.get_loc())
             head.move(line[0])
 
-            if was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()): # Valid move
+            if tail.was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()): # Valid move
                 tail.set_loc([head_loc[0], head_loc[1]])
     
-            was_diag = False
+            tail.set_diag_false()
 
             if is_diagnol(head.get_loc(),tail.get_loc()): # Prepare for the next move
-                was_diag = True  
+                tail.set_diag_true()  
 
             if not check_rope_is_touching(head.get_loc(),tail.get_loc()): # Move the tail for normal diaganols
                 tail.move(line[0])
@@ -73,6 +79,8 @@ def part_two(file):
     for line in data:
         for _ in range(line[1]):
             for idx, knot in enumerate(knots):
+                if idx < 9:
+                    relative_tail = knots[idx+1]
                 pass
 
     out = set(tuple(loc) for loc in locations)
@@ -104,7 +112,7 @@ def parse_inputs(file):
     return lines
 
 if __name__ == "__main__":
-    input_file = "temp.txt"
+    input_file = "input.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
