@@ -1,5 +1,5 @@
 class Knot:
-    def __init__(self, location: list, child = None) -> None:
+    def __init__(self, location: list, child = None, parent = None) -> None:
         self.location = location
         self.was_diag = False
         self.child = child
@@ -38,6 +38,9 @@ def check_rope_is_touching(head_loc, tail_loc):
 def is_diagnol(head_loc,tail_loc):
     if (tail_loc[0] == head_loc[0]+1 or tail_loc[0] == head_loc[0]-1) and (tail_loc[1] == head_loc[1]-1 or tail_loc[1] == head_loc[1]+1):
         return True
+    else:
+        return False
+
 
 def part_one(file):
     data = parse_inputs(file)
@@ -107,57 +110,9 @@ def part_two(file):
                         locations.append(list(tail.get_loc()))
                     
                     print(knots[0].get_loc(), knots[1].get_loc(), knots[2].get_loc(), knots[3].get_loc())
-                    
-            # for idx, knot in enumerate(knots):
-            #     if not idx == len(knots) -1: # If not the last one
-            #         # ISSUE IS THAT THE TRUE HEAD IS NOT UPDATING IT'S POSITION!
-            #         knot_loc = list(knot.get_loc())
-            #         knot.move(line[0])
-            #         relative_tail = knots[idx+1]
-
-            #         if knot == knots[0]:
-            #             print(knot.get_loc(), relative_tail.get_loc())
-
-            #         if relative_tail.was_diag and not check_rope_is_touching(knot.get_loc(), relative_tail.get_loc()):
-            #             relative_tail.set_loc(knot_loc)
-                    
-            #         relative_tail.set_diag_false()
-
-            #         if is_diagnol(knot.get_loc(), relative_tail.get_loc()):
-            #             relative_tail.set_diag_true()
-                    
-            #         if not check_rope_is_touching(knot.get_loc(), relative_tail.get_loc()):
-            #             relative_tail.move(line[0])
-
-            #         if relative_tail == knots[-1]:
-            #             # print(knots[0].get_loc(),knot.get_loc(), relative_tail.get_loc())
-            #             pass
-            #     elif idx == len(knots) -1:
-            #         # print("Tail")
-            #         # print(knot.get_loc())
-                    
-            #         locations.append(list(knot.get_loc()))
-
-
-                    
-            #     # if idx < 9:
-            #     #     relative_tail = knots[idx+1]
-            #     pass
 
     out = set(tuple(loc) for loc in locations)
 
-       
-    """
-    Plan:
-        I could create 10 seperate Knots and set each as a 'head' to the one behind it, starting with the true head and ending with the tail
-        Let's try??? Don't like this idea
-
-        For each knot when the move starts:
-            Head -> moves 
-                    Checks its tail
-                    Moves its tail accordingly
-            each piece acts as a head to the next knot
-    """
     print(locations)
     return len(out)
 
