@@ -1,4 +1,4 @@
-class Piece:
+class Knot:
     def __init__(self, location: list) -> None:
         self.location = location
 
@@ -31,11 +31,9 @@ def is_diagnol(head_loc,tail_loc):
 
 def part_one(file):
     data = parse_inputs(file)
-    # up_and_down_inputs = list(filter(lambda item: item is not None, map(lambda line: line if (line[0] == "U" or line[0] == "D") else None, lines)))
-    # left_and_right_inputs = list(filter(lambda item: item is not None, map(lambda line: line if line[0] == "R" or line[0] == "L" else None, lines)))
-
-    head = Piece([0,0])
-    tail = Piece([0,0])
+    
+    head = Knot([0,0])
+    tail = Knot([0,0])
 
     locations = []
     was_diag = False 
@@ -62,12 +60,37 @@ def part_one(file):
     return len(out)
 
 def part_two(file):
+    data = parse_inputs(file)
+
+    knots = []
+    for _ in range(10): # Create and populate Knots list
+        knot = Knot([0,0])
+        knots.append(knot)
+
+    locations = []
+    was_diag = False 
+
+    for line in data:
+        for _ in range(line[1]):
+            for idx, knot in enumerate(knots):
+                pass
+
+    out = set(tuple(loc) for loc in locations)
+
+       
     """
     Plan:
-        I could create 10 seperate pieces and set each as a 'head' to the one behind it, starting with the true head and ending with the tail
-        Let's try???
+        I could create 10 seperate Knots and set each as a 'head' to the one behind it, starting with the true head and ending with the tail
+        Let's try??? Don't like this idea
+
+        For each knot when the move starts:
+            Head -> moves 
+                    Checks its tail
+                    Moves its tail accordingly
+            each piece acts as a head to the next knot
     """
-    return
+    print(locations)
+    return len(out)
 
 def clean_input_line(line) -> None:
     line = line.split(" ")
@@ -81,7 +104,7 @@ def parse_inputs(file):
     return lines
 
 if __name__ == "__main__":
-    input_file = "input.txt"
+    input_file = "temp.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
