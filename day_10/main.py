@@ -1,11 +1,17 @@
 def part_one(file):
-    cycles = proces_input(file)
-    return 
+    cycles = process_input(file)
+
+    val = 0
+
+    for v in [20,60,100,140,180,220]:
+        val += (v*cycles[v])
+
+    return val
 
 def part_two(file):
     pass
 
-def proces_input(filename: str) -> dict[int,int]:
+def process_input(filename: str) -> dict[int,int]:
     cycle_count = 1
     x = 1
     cycle_values = {cycle_count: x}
@@ -27,7 +33,7 @@ def proces_input(filename: str) -> dict[int,int]:
     return cycle_values 
 
 if __name__ == "__main__":
-    input_path = "temp.txt"
+    input_path = "input.txt"
     print("---Part One---")
     print(part_one(input_path))
 
