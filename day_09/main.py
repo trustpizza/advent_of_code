@@ -4,6 +4,7 @@ class Knot:
         self.was_diag = False
         self.child = child
         self.parent = parent
+        self.locations = []
 
     def move(self,direction) -> None:
         loc = list(self.get_loc())
@@ -19,6 +20,7 @@ class Knot:
 
     def __update_child(self, child, direction,loc):#self, child, direction):
         if self.child != None:
+            self.locations.append(list(self.get_loc()))
             if child.was_diag and not check_rope_is_touching(list(self.get_loc()), child.get_loc()): # Valid move
             #     print(child.get_loc(), "Diag")
                 child.set_loc(loc)
@@ -34,9 +36,9 @@ class Knot:
     def set_loc(self, location: list, direction = None) -> None:
         old_loc = list(self.get_loc())
         self.location = location
-        if self.child!= None:
-            self.child.set_loc(old_loc)
-        # self.__update_child(self.child, direction, location)
+        if self.child!= None and not check_rope_is_touching(location, (self.child.get_loc())):
+            # self.child.set_loc(old_loc)
+            self.__update_child(self.child, direction, location)
 
     def get_loc(self) -> list:
         return self.location
@@ -104,43 +106,10 @@ def move_knot(knots, current_knot_idx, prior_knot, next_knot, line):
 def move_rope(knots, idx, line):
     head = knots[0]
     tail = knots[-1]
-    # print(head, middle_knots, tail)
-    """
-    Every time there is a line, we move the head.
-    
-    If we move the head, look through each of the middle pieces of the rope
-        Take the middle knot
-        Look for the next knot, if there is none set that to be the tail
-
-        Look for the prior knot, if there is none, set that to the head
-
-        If the prior knot is not touching:
-            
-
-    # """
+    # print(head, middle_knots, tail
     head.move(line[0])
-    print(knots[0].get_loc(),knots[1].get_loc(), knots[2].get_loc(), knots[-1].get_loc())
-
-    return
-    if tail:
-        head_loc = list(head.get_loc())
-        head.move(line[0])
-
-        if tail.was_diag and not check_rope_is_touching(head.get_loc(), tail.get_loc()): # Valid move
-            tail.set_loc(head_loc)
-
-        tail.set_diag_false()
-
-        if is_diagnol(head.get_loc(),tail.get_loc()): # Prepare for the next move
-            tail.set_diag_true()  
-
-        if not check_rope_is_touching(head.get_loc(),tail.get_loc()): # Move the tail for normal diaganols
-            tail.move(line[0])
-        
-        if tail.child == None:
-            return(list(tail.get_loc()))
-
     
+    print(knots[0].get_loc(),knots[1].get_loc(), knots[2].get_loc(), knots[3].get_loc(),knots[4].get_loc(), knots[5].get_loc(), knots[6].get_loc(),knots[7].get_loc(), knots[8].get_loc(), knots[9].get_loc())
 
 def part_one(file):
     data = parse_inputs(file)
@@ -176,7 +145,7 @@ def part_two(file):
     data = parse_inputs(file)
 
     knots = []
-    for _ in range(4): # Create and populate Knots list
+    for _ in range(10): # Create and populate Knots list
         knot = Knot([0,0])
         knots.append(knot)
 
@@ -231,10 +200,14 @@ def part_two(file):
                 #             locations.append(list(tail.get_loc()))
                         
                 #     print(knots[0].get_loc(), knots[1].get_loc(), knots[2].get_loc(), knots[3].get_loc())
+    # out = set(tuple(loc) for loc in knots[-1].locations) 
+    out = []
 
-    out = set(tuple(loc) for loc in locations)
+    for loc in knots[-1].locations:
+        out.append(loc)
+    # out = set(tuple(loc) for loc in locations)
 
-    print(locations)
+    # print(locations)
     return len(out)
 
 def clean_input_line(line) -> None:
@@ -249,7 +222,7 @@ def parse_inputs(file):
     return lines
 
 if __name__ == "__main__":
-    input_file = "temp.txt"
+    input_file = "input.txt"
     print("---Part One---")
     print(part_one(input_file))
     print("---Part Two---")
