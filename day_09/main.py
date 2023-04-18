@@ -19,12 +19,12 @@ class Knot:
 
     def __update_child(self, child, direction,loc):#self, child, direction):
         if self.child != None:
-            if child.was_diag and not check_rope_is_touching(list(self.get_loc()), child.get_loc()): # Valid move
-                print(child.get_loc(), "Diag")
-                child.set_loc(loc)
-                child.__update_child(child.child, direction, loc)
+            # if child.was_diag and not check_rope_is_touching(list(self.get_loc()), child.get_loc()): # Valid move
+            #     print(child.get_loc(), "Diag")
+            #     child.set_loc(loc)
+            #     child.__update_child(child.child, direction, loc)
 
-            child.set_diag_false()
+            # child.set_diag_false()
 
             # if is_diagnol(self.get_loc(),child.get_loc()): # Prepare for the next move
             #     child.set_diag_true()  
@@ -32,7 +32,7 @@ class Knot:
             if not check_rope_is_touching(self.get_loc(),child.get_loc()): # Move the tail for normal diaganols
                 child.move(direction)
                 print(child.get_loc(), "Not Touching")
-                
+
     def set_loc(self, location: list, direction = None) -> None:
         self.location = location
         # self.__update_child(self.child, direction, location)
