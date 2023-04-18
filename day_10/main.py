@@ -9,7 +9,43 @@ def part_one(file):
     return val
 
 def part_two(file):
-    pass
+    cycles = process_input(file)
+    # drawn = []
+    # for position in range(240):
+    #     cycle = position +1
+    #     val = get_val(cycles, cycle)
+    #     target = position % 40 - val
+    #     if -1 <= target <= 1: 
+    #         drawn.append(position)
+
+    cycles = process_input(file)
+    drawn = []
+    for position in range(240):
+        cycle = position + 1
+        register_val = get_val(cycles, cycle)
+        target = position % 40 - register_val
+        if -1 <= target <= 1:
+            drawn.append(position)
+    show_screen(drawn)
+
+
+
+def get_val(cycles, cycle):
+    if cycle in cycles:
+        return cycles[cycle]
+    elif cycle-1 in cycles:
+        return cycles[cycle-1]
+    elif cycle-2 in cycles:
+        return cycles[cycle-2]
+
+def show_screen(drawn: list[int]) -> None:
+    for y in range(6):
+        for x in range(40):
+            if x + y * 40 in drawn:
+                print("#", end="")
+            else:
+                print(".", end="")
+        print()
 
 def process_input(filename: str) -> dict[int,int]:
     cycle_count = 1
