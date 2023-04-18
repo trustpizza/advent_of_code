@@ -1,31 +1,33 @@
 def part_one(file):
-    pass
+    cycles = proces_input(file)
+    return 
 
 def part_two(file):
     pass
 
 def proces_input(filename: str) -> dict[int,int]:
-    # Opent the file
-    # Have a cycle Count
-    # Have what x equals
-    # Dictionary = {}
-    # For _ in range of file length:
-        # Case Match:
-            # If Noop:
-                # Cycle+=1
-                # dict(cycle) = x
-            # if Addx:
-                # cycle +=1
-                # dict(cycle) = x
-                # cycle +=1
-                # x+= file_input
-                # dict(cycle) = x
+    cycle_count = 1
+    x = 1
+    cycle_values = {cycle_count: x}
 
-    # Return Dictionary        
-    pass
+    with open(filename, encoding="utf8") as f:
+        lines = [line.strip() for line in f.readlines()]
+   
+    for line in lines:
+        match line.split():
+            case ["noop"]:
+                cycle_count += 1
+                cycle_values[cycle_count] = x
+            case ["addx", v]:
+                cycle_count += 1
+                cycle_values[cycle_count] = x
+                cycle_count += 1
+                x += int(v)
+                cycle_values[cycle_count] = x
+    return cycle_values 
 
 if __name__ == "__main__":
-    input_path = "input.txt"
+    input_path = "temp.txt"
     print("---Part One---")
     print(part_one(input_path))
 
