@@ -7,12 +7,24 @@ class Monkey:
         self.starting_items = starting_items
         self.operation = operation
         self.test = test
-
+        self.true_target = true_target
+        self.false_target = false_target
+        
         Monkey.instances.append(self)
+
+    def __operate(self, item):
+        return self.operation(item)
+        
+    def test_item(self, item):
+        return self.test(item)
     
-    def inspect_item(self):
-        item = self.starting_items[0]
-    
+    def inspect_item(self,item):
+        item = self.__operate(item)
+        if self.test_item(item):
+            return Monkey.find(self.true_target)
+        else:
+            return Monkey.find(self.false_target)
+
     @classmethod
     def find(cls, id):
         return [monkey for monkey in cls.instances if monkey.id == id]
@@ -22,13 +34,12 @@ def test():
     id = 0
     starting_items = [79, 98]
     operation = lambda old: old * 19
-    test = lambda x: x % 3 == 0
+    test = lambda x: bool(x % 3 == 0)
     true_target = 2
     false_target = 3
 
     m1 = Monkey(id, starting_items, operation, test, true_target, false_target)
-    m2 = Monkey.find(1)
-    print(m1,m2)
+    print(m1.inspect_item(m1.starting_items[1]))
 
 def part_one(file):
     pass
