@@ -42,13 +42,32 @@ def test():
     print(m1.inspect_item(m1.starting_items[1]))
 
 def part_one(file):
+    parse_inputs(file)
     pass
 
 def part_two(file):
     pass
 
+def get_operation(operation):
+    pass
+
+def parse_inputs(file):
+    with open(file, encoding="utf-8") as f:
+        for monkey in f.read().split("\n\n"):
+            # monkey = monkey.split("\n")
+            monkey = monkey.split("\n")
+            id = int(monkey[0].split(" ")[1].replace(":", ""))
+            starting_items = [int(num) for num in monkey[1].split(": ")[1].split(", ")]
+            operation = get_operation(monkey[2])
+
+            print(operation)
+            print(monkey)
+            print("next monkeY")
+    # print(monkeys)
+
+
 if __name__ == "__main__":
-    input_path = "input.txt"
+    input_path = "temp.txt"
     print("---Part One---")
     print(part_one(input_path))
 
