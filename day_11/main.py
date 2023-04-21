@@ -77,9 +77,10 @@ def parse_inputs(file):
             id = int(monkey[0].split(" ")[1].replace(":", ""))
             starting_items = [int(num) for num in monkey[1].split(": ")[1].split(", ")]
             operation = get_operation(monkey[2])
+            truth_condition_id = int(monkey[-2].split(" ")[-1])
+            false_condition_id = int(monkey[-1].split(" ")[-1])
 
-            print(operation(2))
-            # print(monkey)
+            print(truth_condition_id, false_condition_id)
             print("next monkeY")
     # print(monkeys)
 
