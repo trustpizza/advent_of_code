@@ -20,7 +20,7 @@ class Monkey:
         for item in self.starting_items[:]:
             self.items_inspected += 1
             Monkey.worry_level = self.operate(item)
-            Monkey.worry_level = math.floor(Monkey.worry_level / 3)
+            Monkey.worry_level = math.floor(Monkey.worry_level)
             self.throw_item(item)
 
     def operate(self, item):
@@ -62,6 +62,7 @@ def test(file):
     pass
 
 def part_one(file):
+    return
     parse_inputs(file)
 
     for i in range(20):
@@ -80,7 +81,22 @@ def part_one(file):
 
 
 def part_two(file):
-    pass
+    parse_inputs(file)
+    
+    for i in range(1000):
+        for monkey in Monkey.instances:
+            monkey.take_turn()            
+            
+    final = []
+    for monkey in Monkey.instances:
+        print(monkey.items_inspected)
+        final.append(monkey.items_inspected)
+
+    largest_2 = Nmaxelements(final, 2)
+
+    monkey_business = largest_2[0] * largest_2[1]
+    print(final)
+    return monkey_business
 
 def get_operation(operation):
     func = operation.split("= ")[1]
@@ -122,7 +138,7 @@ def parse_inputs(file):
             monkey = Monkey(id, starting_items, operation, test, truth_condition_id, false_condition_id)
 
 if __name__ == "__main__":
-    input_path = "input.txt"
+    input_path = "temp.txt"
     print("---Part One---")
     print(part_one(input_path))
 
