@@ -1,3 +1,5 @@
+import math
+
 class Monkey:
 
     instances = []
@@ -15,30 +17,30 @@ class Monkey:
         Monkey.instances.append(self)
 
     def take_turn(self):
-        for item in self.starting_items:
+        for item in self.starting_items[:]:
             Monkey.worry_level = self.operate(item)
-            Monkey.worry_level = round(Monkey.worry_level / 3)
-            next_monkey = self.check_worry_level()
-            print(next_monkey.id)
+            Monkey.worry_level = math.floor(Monkey.worry_level / 3)
+            print(Monkey.worry_level)
+            self.throw_item(item)
+
 
     def operate(self, item):
         return self.__operation(item)
         
     def test_worry(self, item):
+        print(item, self.__test(item))
         return self.__test(item)
 
-    def check_worry_level(self):
+    def throw_item(self, item):
+        self.starting_items.remove(item)
+
         if self.test_worry(Monkey.worry_level):
-            return Monkey.find(self.truth_condition_id)
+            Monkey.find(self.truth_condition_id).catch(item)
         else:
-            return Monkey.find(self.false_condition_id)
+            Monkey.find(self.false_condition_id).catch(item)
     
-    def inspect_item(self):
-        item = self.__operate(Monkey.worry_level)
-        if self.test_item():
-            return Monkey.find(self.truth_condition_id)
-        else:
-            return Monkey.find(self.false_condition_id)
+    def catch(self, item: int):
+        self.starting_items.append(item)
 
     @classmethod
     def find(cls, id):
@@ -48,9 +50,15 @@ class Monkey:
 def test(file):
     parse_inputs(file)
     monkey = Monkey.find(0)
-    monkey.take_turn()
+    m2 = Monkey.find(2)
+    m3 = Monkey.find(3)
 
-        
+    print(monkey.starting_items)
+    print(m2.starting_items, m3.starting_items)
+
+    monkey.take_turn()
+    print(monkey.starting_items)
+    print(m2.starting_items, m3.starting_items)        
 
 def part_one(file):
     # parse_inputs(file)
