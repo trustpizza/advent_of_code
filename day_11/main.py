@@ -1,48 +1,64 @@
 class Monkey:
 
     instances = []
+    worry_level = 0
 
-    def __init__(self, id, starting_items, operation, test, true_target, false_target) -> None:
+    def __init__(self, id, starting_items, operation, test, truth_condition_id, false_condition_id) -> None:
         self.id = id
         self.starting_items = starting_items
-        self.operation = operation
-        self.test = test
-        self.true_target = true_target
-        self.false_target = false_target
+        self.__operation = operation
+        self.__test = test
+        self.truth_condition_id = truth_condition_id
+        self.false_condition_id = false_condition_id
+        self.items_inspected = 0
         
         Monkey.instances.append(self)
 
-    def __operate(self, item):
-        return self.operation(item)
+    def take_turn(self):
+        for item in self.starting_items:
+            Monkey.worry_level = self.operate(item)
+            Monkey.worry_level = round(Monkey.worry_level / 3)
+            next_monkey = self.check_worry_level()
+            print(next_monkey.id)
+
+    def operate(self, item):
+        return self.__operation(item)
         
-    def test_item(self, item):
-        return self.test(item)
-    
-    def inspect_item(self,item):
-        item = self.__operate(item)
-        if self.test_item(item):
-            return Monkey.find(self.true_target)
+    def test_worry(self, item):
+        return self.__test(item)
+
+    def check_worry_level(self):
+        if self.test_worry(Monkey.worry_level):
+            return Monkey.find(self.truth_condition_id)
         else:
-            return Monkey.find(self.false_target)
+            return Monkey.find(self.false_condition_id)
+    
+    def inspect_item(self):
+        item = self.__operate(Monkey.worry_level)
+        if self.test_item():
+            return Monkey.find(self.truth_condition_id)
+        else:
+            return Monkey.find(self.false_condition_id)
 
     @classmethod
     def find(cls, id):
-        return [monkey for monkey in cls.instances if monkey.id == id]
+        return [monkey for monkey in cls.instances if monkey.id == id][0]
         
 
-def test():
-    id = 0
-    starting_items = [79, 98]
-    operation = lambda old: old * 19
-    test = lambda x: bool(x % 3 == 0)
-    true_target = 2
-    false_target = 3
+def test(file):
+    parse_inputs(file)
+    monkey = Monkey.find(0)
+    monkey.take_turn()
 
-    m1 = Monkey(id, starting_items, operation, test, true_target, false_target)
-    print(m1.inspect_item(m1.starting_items[1]))
+        
 
 def part_one(file):
-    parse_inputs(file)
+    # parse_inputs(file)
+
+    # for monkey in Monkey.instances:
+    #     for item in monkey.starting_items:
+    #         # Take the item
+    #         # 
     pass
 
 def part_two(file):
@@ -69,21 +85,23 @@ def get_operation(operation):
 
     return out
 
+def get_test(test):
+    num = int(test.split(" ")[-1])
+    return lambda x: bool(x % num == 0)
+
 def parse_inputs(file):
     with open(file, encoding="utf-8") as f:
         for monkey in f.read().split("\n\n"):
-            # monkey = monkey.split("\n")
             monkey = monkey.split("\n")
+
             id = int(monkey[0].split(" ")[1].replace(":", ""))
             starting_items = [int(num) for num in monkey[1].split(": ")[1].split(", ")]
             operation = get_operation(monkey[2])
-            truth_condition_id = int(monkey[-2].split(" ")[-1])
-            false_condition_id = int(monkey[-1].split(" ")[-1])
+            test = get_test(monkey[3])
+            truth_condition_id = int(monkey[4].split(" ")[-1])
+            false_condition_id = int(monkey[5].split(" ")[-1])
 
-            print(truth_condition_id, false_condition_id)
-            print("next monkeY")
-    # print(monkeys)
-
+            monkey = Monkey(id, starting_items, operation, test, truth_condition_id, false_condition_id)
 
 if __name__ == "__main__":
     input_path = "temp.txt"
@@ -94,4 +112,4 @@ if __name__ == "__main__":
     print(part_two(input_path))
 
     print("---Test----")
-    print(test())
+    print(test(input_path))
