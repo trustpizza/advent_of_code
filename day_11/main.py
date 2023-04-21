@@ -49,7 +49,25 @@ def part_two(file):
     pass
 
 def get_operation(operation):
-    pass
+    func = operation.split("= ")[1]
+    operator = func.split(" ")[1]
+    addend_or_multiplicand = func.split(operator)[-1]
+
+    out = None
+
+    if operator == "+":
+        if addend_or_multiplicand == " old":
+            out = lambda x: x + x
+        else:
+            out = lambda x: x + int(addend_or_multiplicand)
+    elif operator == "*":
+        if addend_or_multiplicand == " old":
+            out = lambda x: x * x
+
+        else:
+            out = lambda x: x * int(addend_or_multiplicand)
+
+    return out
 
 def parse_inputs(file):
     with open(file, encoding="utf-8") as f:
@@ -60,8 +78,8 @@ def parse_inputs(file):
             starting_items = [int(num) for num in monkey[1].split(": ")[1].split(", ")]
             operation = get_operation(monkey[2])
 
-            print(operation)
-            print(monkey)
+            print(operation(2))
+            # print(monkey)
             print("next monkeY")
     # print(monkeys)
 
