@@ -18,26 +18,24 @@ class Monkey:
 
     def take_turn(self):
         for item in self.starting_items[:]:
+            self.items_inspected += 1
             Monkey.worry_level = self.operate(item)
             Monkey.worry_level = math.floor(Monkey.worry_level / 3)
-            print(Monkey.worry_level)
             self.throw_item(item)
-
 
     def operate(self, item):
         return self.__operation(item)
         
     def test_worry(self, item):
-        print(item, self.__test(item))
         return self.__test(item)
 
     def throw_item(self, item):
         self.starting_items.remove(item)
 
         if self.test_worry(Monkey.worry_level):
-            Monkey.find(self.truth_condition_id).catch(item)
+            Monkey.find(self.truth_condition_id).catch(int(Monkey.worry_level))
         else:
-            Monkey.find(self.false_condition_id).catch(item)
+            Monkey.find(self.false_condition_id).catch(int(Monkey.worry_level))
     
     def catch(self, item: int):
         self.starting_items.append(item)
@@ -46,28 +44,40 @@ class Monkey:
     def find(cls, id):
         return [monkey for monkey in cls.instances if monkey.id == id][0]
         
+def Nmaxelements(list1, N):
+    final_list = []
+ 
+    for i in range(0, N):
+        max1 = 0
+ 
+        for j in range(len(list1)):
+            if list1[j] > max1:
+                max1 = list1[j]
+ 
+        list1.remove(max1)
+        final_list.append(max1)  
+    return final_list
 
-def test(file):
-    parse_inputs(file)
-    monkey = Monkey.find(0)
-    m2 = Monkey.find(2)
-    m3 = Monkey.find(3)
-
-    print(monkey.starting_items)
-    print(m2.starting_items, m3.starting_items)
-
-    monkey.take_turn()
-    print(monkey.starting_items)
-    print(m2.starting_items, m3.starting_items)        
+def test(file):  
+    pass
 
 def part_one(file):
-    # parse_inputs(file)
+    parse_inputs(file)
 
-    # for monkey in Monkey.instances:
-    #     for item in monkey.starting_items:
-    #         # Take the item
-    #         # 
-    pass
+    for i in range(20):
+        for monkey in Monkey.instances:
+            monkey.take_turn()            
+            
+    final = []
+    for monkey in Monkey.instances:
+        final.append(monkey.items_inspected)
+
+    largest_2 = Nmaxelements(final, 2)
+
+    monkey_business = largest_2[0] * largest_2[1]
+
+    return monkey_business
+
 
 def part_two(file):
     pass
@@ -112,7 +122,7 @@ def parse_inputs(file):
             monkey = Monkey(id, starting_items, operation, test, truth_condition_id, false_condition_id)
 
 if __name__ == "__main__":
-    input_path = "temp.txt"
+    input_path = "input.txt"
     print("---Part One---")
     print(part_one(input_path))
 
