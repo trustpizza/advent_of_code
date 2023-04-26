@@ -57,7 +57,7 @@ def adjust_tail(tail: tuple[int, int], head: tuple[int, int]) -> tuple[int, int]
 
 
 if __name__ == "__main__":
-    input_path = "temp.txt"
+    input_path = "input.txt"
     print("---Part One---")
     print(part_one(input_path))
 
