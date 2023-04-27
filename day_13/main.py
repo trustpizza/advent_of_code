@@ -8,10 +8,15 @@ def part_one(file):
 def part_two(file):
     line_pairs = parse_inputs(file)
     keys = [[[2]],[[6]]]
-    # flattened_lines = [item for subline in line_pairs for item in subline]
     flattened_lines = keys + [item for sublist in line_pairs for item in sublist]
     flattened_lines.sort(key=cmp_to_key(compare), reverse=True)
-    print(flattened_lines)
+
+    indices = []
+
+    for key in keys:
+        indices.append(flattened_lines.index(key) +1)
+    
+    return indices[0] * indices[1]
 
 # Return -1 if not ordered, 0 if equal, 1 if ordered
 def compare(left: list | int, right: list | int):
@@ -39,7 +44,7 @@ def parse_inputs(file):
         
 
 if __name__ == "__main__":
-    filename = "temp.txt"
+    filename = "input.txt"
     print("---Part One---")
     print(part_one(filename))
     print("---Part Two---")
