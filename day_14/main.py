@@ -16,16 +16,19 @@ def part_one(file):
 
     sand = []
 
-    for i in range(23): # THe last one fails
+    x = True
+
+    while x: # THe last one fails
         try:
             next_grain = drop_sand(origin, rocks, sand)
             sand.append(next_grain)
         except:
-            print(len(sand))
-    print(sand)
+            x = False
+            
     # Now I need to create a way to loop appropriately and call the end.  
     # draw(sand, rocks)
-    return
+    
+    return len((sand))
 
 
 def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
@@ -37,8 +40,9 @@ def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
     if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
         old_grain = tuple(next_grain)
         
+        # next_grain = check_left(old_grain, rocks, sand)
         next_grain = check_left(old_grain, rocks, sand)
-        
+
         if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand): # Looking right
             next_grain = check_right(old_grain, rocks, sand)
     
@@ -59,19 +63,39 @@ def check_down(grain: tuple, rocks: set, sand: list):
     return check_down((grain[0],grain[1]+1), rocks, sand)
 
 
+# def check_left(grain:tuple, rocks:set, sand:list):
+#     temp_check_left(grain, rocks, sand)
+
+#     if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
+#         return grain
+    
+#     return check_left((grain[0]-1, grain[1]+1), rocks, sand)
+
+
 def check_left(grain:tuple, rocks:set, sand:list):
 
+    left = check_down((grain[0]-1, grain[1]), rocks, sand)
     if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
         return grain
+    # if not is_empty((left[0], left[1]+1), rocks, sand):
+    #     print(left)
+    return check_left(left, rocks, sand)
     
-    return check_left((grain[0]-1, grain[1]+1), rocks, sand)
+    # return temp_check_left(left, rocks, sand)
     
 
-def check_right(grain:tuple, rocks:set, sand:list):
+# def check_right(grain:tuple, rocks:set, sand:list):
+#     if is_empty((grain[0]+1, grain[1]+1), rocks, sand):
+#         return grain
+
+#     return check_left((grain[0]+1, grain[1]+1), rocks, sand)
+
+def check_right(grain:tuple, rocks:set, sand:list) -> tuple:
+    right = check_down((grain[0]+1, grain[1]), rocks, sand)
     if is_empty((grain[0]+1, grain[1]+1), rocks, sand):
         return grain
-
-    return check_left((grain[0]+1, grain[1]+1), rocks, sand)
+    
+    return check_right(right, rocks, sand)
 
 # I need a method that calls all the methods below to drop a piece of sand
 # I need a method that checks down
@@ -116,6 +140,6 @@ def parse_inputs(file):
 
 
 if __name__ == "__main__":
-    filename = 'temp.txt'
+    filename = 'input.txt'
     print("---Part One---")
     print(part_one(filename))
