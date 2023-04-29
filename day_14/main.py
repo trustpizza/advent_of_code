@@ -14,35 +14,33 @@ def part_one(file):
     # Find bottom_most edge closest to the
     origin = (500,0) 
 
-    sand = drop_sand(origin, rocks)
-    for i in range(21):
-        sand = drop_sand(origin, rocks, sand)
+    sand = []
+    for i in range(23):
+        try:
+            sand = drop_sand(origin, rocks, sand)
+        except:
+            print(len(sand))
 
-    print(sand)
+    # Now I need to create a way to loop appropriately and call the end.  
+    # draw(sand, rocks)
+    return
 
-    return 
 
 def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
     next_grain = check_down(grain, rocks, sand) # First the grain drops down
-
+    
     if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
-        # First we look left 1 and down 1, if we see that that spot is empty, we keep looking left until we get to the bottom of the slope
-        # If the bottom of the slope is empty, we return that spot.
-        # If the bottom of the slope is full#
         old_grain = tuple(next_grain)
         
         next_grain = check_left(old_grain, rocks, sand)
-        if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand):
+        if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand): # Looking right
             next_grain = check_right(old_grain, rocks, sand)
-            # check_right()
-            
-
-
     
     sand.append(next_grain)
 
+    # Print if the old grain == the grain
+    print(next_grain)
     return sand
-    
 
 
 def check_down(grain: tuple, rocks: set, sand: list):
