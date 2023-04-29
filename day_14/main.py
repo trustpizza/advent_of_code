@@ -2,107 +2,47 @@ from functools import reduce
 from operator import concat
 
 def part_one(file):
-    lines = parse_inputs(file)
+    rocks = parse_inputs(file)
+    y_max = max([y for _, y in rocks]) # Max Depth
+    sand_heap = set()
+    abyss = False
 
-    rocks = []
-    for line in lines:
-        for idx in range(len(line)):
-            if idx < len(line) - 1:
-                rock_row = find_rocks(line[idx], line[idx+1])
-                rocks.append(rock_row)
-    rocks = set(list(reduce(concat, rocks))) #Creates a set to remove additional values in a flattened list
-    # Find bottom_most edge closest to the
-    origin = (500,0) 
-
-    sand = []
-
-    x = True
-
-    while x: # THe last one fails
-        try:
-            next_grain = drop_sand(origin, rocks, sand)
-            sand.append(next_grain)
-        except:
-            x = False
-            
-    # Now I need to create a way to loop appropriately and call the end.  
-    # draw(sand, rocks)
-    
-    return len((sand))
+    while not abyss:
+        new_sand = (500,0)
+        current_position = new_sand
+        rest = False
+        while not rest:
+            if current_position[1] > y_max:
+                abyss = True
+                break
+            for dx, dy in [(0,1), (-1,1), (1,1)]: # Down, Left, Right
+                next_position = (current_position[0]+dx, current_position[1]+dy)
+                if next_position not in rocks | sand_heap:
+                    current_position = next_position
+                    break
+            else:
+                rest = True
+                sand_heap.add(current_position)
+    return len(sand_heap)
 
 
-def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
-    # Let's think about recursion.
-    # This method will run until 
-    # #
-    next_grain = check_down(grain, rocks, sand) # First the grain drops down
+def part_two(file):
+    rocks = parse_inputs(file)
+    y_max = max([y for _,y in rocks])
+    sand_heap = {(500,0)}
+    queue = {(500,0)}
 
-    if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
-        old_grain = tuple(next_grain)
-        
-        # next_grain = check_left(old_grain, rocks, sand)
-        next_grain = check_left(old_grain, rocks, sand)
+    while queue:
+        current_position = queue.pop()
+        if current_position[1] >= y_max +1:
+            continue
+        for dx, dy in [(0,1), (-1,1), (1,1)]:
+            next_position = (current_position[0]+dx, current_position[1]+dy)
+            if next_position not in rocks:
+                sand_heap.add(next_position)
+                queue.add(next_position)
 
-        if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand): # Looking right
-            next_grain = check_right(old_grain, rocks, sand)
-    
-        # return drop_sand(next_grain, rocks, sand)
-
-    # Print if the old grain == the grain
-    # print(next_grain)
-    if is_empty((next_grain[0], next_grain[1]+1), rocks, sand) and is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand) and is_empty((next_grain[0]-1, next_grain[1]+1), rocks, sand): # The if condition needs to be if you cant look down anymore, can't look left anymore, can't look right anymore
-        return next_grain
-    else:
-        return drop_sand(next_grain, rocks, sand)
-
-
-def check_down(grain: tuple, rocks: set, sand: list):
-    if is_empty((grain[0], grain[1]+1), rocks, sand):
-        return grain
-
-    return check_down((grain[0],grain[1]+1), rocks, sand)
-
-
-# def check_left(grain:tuple, rocks:set, sand:list):
-#     temp_check_left(grain, rocks, sand)
-
-#     if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
-#         return grain
-    
-#     return check_left((grain[0]-1, grain[1]+1), rocks, sand)
-
-
-def check_left(grain:tuple, rocks:set, sand:list):
-
-    left = check_down((grain[0]-1, grain[1]), rocks, sand)
-    if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
-        return grain
-    # if not is_empty((left[0], left[1]+1), rocks, sand):
-    #     print(left)
-    return check_left(left, rocks, sand)
-    
-    # return temp_check_left(left, rocks, sand)
-    
-
-# def check_right(grain:tuple, rocks:set, sand:list):
-#     if is_empty((grain[0]+1, grain[1]+1), rocks, sand):
-#         return grain
-
-#     return check_left((grain[0]+1, grain[1]+1), rocks, sand)
-
-def check_right(grain:tuple, rocks:set, sand:list) -> tuple:
-    right = check_down((grain[0]+1, grain[1]), rocks, sand)
-    if is_empty((grain[0]+1, grain[1]+1), rocks, sand):
-        return grain
-    
-    return check_right(right, rocks, sand)
-
-# I need a method that calls all the methods below to drop a piece of sand
-# I need a method that checks down
-
-def is_empty(position:tuple, rocks:set, sand:list):
-    return position in rocks or position in sand
-
+    return len(sand_heap)
 
 def find_rocks(first_pos, second_pos):
     rock_row = []
@@ -136,10 +76,21 @@ def horizontal_rock(first_pos, second_pos, i):
 def parse_inputs(file):
     with open(file, "r", encoding="utf-8") as f:
         lines = list(map(lambda line: list(map(lambda entry: tuple(map(lambda input_half: int(input_half), entry.split(","))), line)), [line.split(" -> ") for line in f.read().splitlines()]))
-    return lines
+    
+    rocks = []
+    
+    for line in lines:
+        for idx in range(len(line)):
+            if idx < len(line) - 1:
+                rock_row = find_rocks(line[idx], line[idx+1])
+                rocks.append(rock_row)
+    rocks = set(list(reduce(concat, rocks)))
+    return rocks
 
 
 if __name__ == "__main__":
     filename = 'input.txt'
     print("---Part One---")
     print(part_one(filename))
+    print("---Part Two---")
+    print(part_two(filename))
