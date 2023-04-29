@@ -22,47 +22,34 @@ def place_sand(origin, rocks, current_position, sand_locations=[]):
         return sand_locations
 
     current_position = find_bottom(current_position, rocks, sand_locations)
+    sand_locations.append(current_position) # This adds the first one to start things off
 
-    # if current_position == origin:
-    #     return sand_locations
-    print(current_position)
+    if len(sand_locations) > 5:
+        print(sand_locations)
+        return 
 
-    if not lookout_below(current_position, rocks, sand_locations):
-        sand_locations.append(current_position)
+    if not lookout_below(current_position, rocks, sand_locations): #Stops when the pile reaches the origin
+        current_position = find_bottom(current_position, rocks, sand_locations)
 
-        # print(bool(look_left(current_position, rocks, sand_locations)))
+        # left = [current_position[0], current_position[1]]
+        right = tuple(current_position)
 
-        if bool(look_left(current_position, rocks, sand_locations)):
+        while bool(look_left(left, rocks, sand_locations)): #Triggered when you can look left and find an empty space
             left = look_left(current_position, rocks, sand_locations)
-            print(sand_locations)
-            place_sand(origin, rocks, left, sand_locations)
-            # place_sand(origin, rocks, left, sand_locations)
-            # print(left)
-            # sand_locations.append(left)
-            # pass
+            sand_locations.append(left)
+
+            # if bool(look_right(current_position, rocks, sand_locations)):
+            #     pass
+            # else:
+
         else:
-            # place_sand(origin, rocks, current_position, sand_locations)
-            return
-    else:
-        print()
-        location = lookout_below(current_position, rocks, sand_locations)
-        sand_locations.append(location)
+            sand_locations.append(current_position)
 
+        current_position = find_bottom(current_position, rocks, sand_locations)
         place_sand(origin, rocks, current_position, sand_locations)
-        # sand_locations.append()
-    print(sand_locations)
-    
+    else:
+        return
 
-    # sand_locations.append(current_position)
-    # print(lookout_below(current_position, rocks, sand_locations))
-
-    # if not lookout_below(current_position, rocks, sand_locations):
-    #     print()
-
-    # return sand_locations
-    
-    # if not lookout_below(current_position, rocks):
-    #     if look_left(current_position,)
 
     # Stop when look down, look left, or look right is the edge STOP and return sand_locations!
 
@@ -74,15 +61,17 @@ def place_sand(origin, rocks, current_position, sand_locations=[]):
         # If it isn't, add the left location to the sand_locations, rerun...
 
     # If it isn't, add the down location to the sand_locations, rerun place_sand with origin, rocks, sandlocations 
-        
+    return     
     
 
 def find_bottom(position,rocks, sand_locations):
-    next_location = (position[0], position[1]+1)
+    next_location = (position[0], position[1])
+
     while next_location not in rocks and next_location not in sand_locations:
         next_location = (next_location[0], next_location[1]+1)
     
     return (next_location[0], next_location[1]-1)
+
 
 def lookout_below(position, rocks, sand_locations):
     below = (position[0], position[1]+1)
@@ -93,16 +82,15 @@ def lookout_below(position, rocks, sand_locations):
 
     
 def look_left(position, rocks, sand_locations):
-    left = (position[0]-1, position[1])
+    left = (position[0]-1, position[1]+1)
     if left not in rocks and left not in sand_locations:
-        # print(position,left)
         return left
     else: 
         return False
 
 
 def look_right(position, rocks, sand_locations):
-    right = (position[0]+1, position[1])
+    right = (position[0]+1, position[1]+1)
     if right not in rocks and right not in sand_locations:
         return right
     else: return False
