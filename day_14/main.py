@@ -15,7 +15,8 @@ def part_one(file):
     origin = (500,0) 
 
     sand = []
-    for i in range(23):
+
+    for i in range(23): # THe last one fails
         try:
             next_grain = drop_sand(origin, rocks, sand)
             sand.append(next_grain)
@@ -31,17 +32,17 @@ def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
     # Let's think about recursion.
     # This method will run until 
     # #
-
     next_grain = check_down(grain, rocks, sand) # First the grain drops down
-    
 
     if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
         old_grain = tuple(next_grain)
         
         next_grain = check_left(old_grain, rocks, sand)
+        
         if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand): # Looking right
             next_grain = check_right(old_grain, rocks, sand)
     
+        # return drop_sand(next_grain, rocks, sand)
 
     # Print if the old grain == the grain
     # print(next_grain)
@@ -59,6 +60,7 @@ def check_down(grain: tuple, rocks: set, sand: list):
 
 
 def check_left(grain:tuple, rocks:set, sand:list):
+
     if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
         return grain
     
