@@ -13,87 +13,63 @@ def part_one(file):
     rocks = set(list(reduce(concat, rocks))) #Creates a set to remove additional values in a flattened list
     # Find bottom_most edge closest to the
     origin = (500,0) 
-    sand_locations = place_sand(origin, rocks, list(origin))
-    return sand_locations
 
+    sand = drop_sand(origin, rocks)
+    for i in range(21):
+        sand = drop_sand(origin, rocks, sand)
 
-def place_sand(origin, rocks, current_position, sand_locations=[]):
-    if not look_left(current_position, rocks, sand_locations) and not look_right(current_position, rocks, sand_locations):
-        return sand_locations
+    print(sand)
 
-    current_position = find_bottom(current_position, rocks, sand_locations)
-    sand_locations.append(current_position) # This adds the first one to start things off
+    return 
 
-    if len(sand_locations) > 5:
-        print(sand_locations)
-        return 
+def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
+    next_grain = check_down(grain, rocks, sand) # First the grain drops down
 
-    if not lookout_below(current_position, rocks, sand_locations): #Stops when the pile reaches the origin
-        current_position = find_bottom(current_position, rocks, sand_locations)
+    if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
+        # First we look left 1 and down 1, if we see that that spot is empty, we keep looking left until we get to the bottom of the slope
+        # If the bottom of the slope is empty, we return that spot.
+        # If the bottom of the slope is full#
+        old_grain = tuple(next_grain)
+        
+        next_grain = check_left(old_grain, rocks, sand)
+        if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand):
+            next_grain = check_right(old_grain, rocks, sand)
+            # check_right()
+            
 
-        # left = [current_position[0], current_position[1]]
-        right = tuple(current_position)
-
-        while bool(look_left(left, rocks, sand_locations)): #Triggered when you can look left and find an empty space
-            left = look_left(current_position, rocks, sand_locations)
-            sand_locations.append(left)
-
-            # if bool(look_right(current_position, rocks, sand_locations)):
-            #     pass
-            # else:
-
-        else:
-            sand_locations.append(current_position)
-
-        current_position = find_bottom(current_position, rocks, sand_locations)
-        place_sand(origin, rocks, current_position, sand_locations)
-    else:
-        return
-
-
-    # Stop when look down, look left, or look right is the edge STOP and return sand_locations!
-
-    # First look down until 
-    # if down is occupied, look left
-        # if left is occupied, look right
-            # if right is occupied, do nothing
-            # else add the right location to the sand_locations, rerun...
-        # If it isn't, add the left location to the sand_locations, rerun...
-
-    # If it isn't, add the down location to the sand_locations, rerun place_sand with origin, rocks, sandlocations 
-    return     
-    
-
-def find_bottom(position,rocks, sand_locations):
-    next_location = (position[0], position[1])
-
-    while next_location not in rocks and next_location not in sand_locations:
-        next_location = (next_location[0], next_location[1]+1)
-    
-    return (next_location[0], next_location[1]-1)
-
-
-def lookout_below(position, rocks, sand_locations):
-    below = (position[0], position[1]+1)
-    if below not in rocks and below not in sand_locations:
-        return below
-    else: 
-        return False
 
     
-def look_left(position, rocks, sand_locations):
-    left = (position[0]-1, position[1]+1)
-    if left not in rocks and left not in sand_locations:
-        return left
-    else: 
-        return False
+    sand.append(next_grain)
+
+    return sand
+    
 
 
-def look_right(position, rocks, sand_locations):
-    right = (position[0]+1, position[1]+1)
-    if right not in rocks and right not in sand_locations:
-        return right
-    else: return False
+def check_down(grain: tuple, rocks: set, sand: list):
+    if is_empty((grain[0], grain[1]+1), rocks, sand):
+        return grain
+
+    return check_down((grain[0],grain[1]+1), rocks, sand)
+
+
+def check_left(grain:tuple, rocks:set, sand:list):
+    if is_empty((grain[0]-1, grain[1]+1), rocks, sand):
+        return grain
+    
+    return check_left((grain[0]-1, grain[1]+1), rocks, sand)
+    
+
+def check_right(grain:tuple, rocks:set, sand:list):
+    if is_empty((grain[0]+1, grain[1]+1), rocks, sand):
+        return grain
+
+    return check_left((grain[0]+1, grain[1]+1), rocks, sand)
+
+# I need a method that calls all the methods below to drop a piece of sand
+# I need a method that checks down
+
+def is_empty(position:tuple, rocks:set, sand:list):
+    return position in rocks or position in sand
 
 
 def find_rocks(first_pos, second_pos):
