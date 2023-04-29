@@ -17,18 +17,24 @@ def part_one(file):
     sand = []
     for i in range(23):
         try:
-            sand = drop_sand(origin, rocks, sand)
+            next_grain = drop_sand(origin, rocks, sand)
+            sand.append(next_grain)
         except:
             print(len(sand))
-
+    print(sand)
     # Now I need to create a way to loop appropriately and call the end.  
     # draw(sand, rocks)
     return
 
 
 def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
+    # Let's think about recursion.
+    # This method will run until 
+    # #
+
     next_grain = check_down(grain, rocks, sand) # First the grain drops down
     
+
     if not is_empty((grain[0]-1, grain[1]+1), rocks, sand): # Looking left
         old_grain = tuple(next_grain)
         
@@ -36,11 +42,13 @@ def drop_sand(grain: tuple, rocks: set, sand=[]) -> tuple:
         if not is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand): # Looking right
             next_grain = check_right(old_grain, rocks, sand)
     
-    sand.append(next_grain)
 
     # Print if the old grain == the grain
-    print(next_grain)
-    return sand
+    # print(next_grain)
+    if is_empty((next_grain[0], next_grain[1]+1), rocks, sand) and is_empty((next_grain[0]+1, next_grain[1]+1), rocks, sand) and is_empty((next_grain[0]-1, next_grain[1]+1), rocks, sand): # The if condition needs to be if you cant look down anymore, can't look left anymore, can't look right anymore
+        return next_grain
+    else:
+        return drop_sand(next_grain, rocks, sand)
 
 
 def check_down(grain: tuple, rocks: set, sand: list):
